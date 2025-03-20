@@ -1,4 +1,4 @@
-# Health Calculator Microservice with CI/CD Pipeline on Azure
+# Health Calculator Microservice with CI/CD Pipeline on Azure 😊
 
 ## Overview
 
@@ -6,7 +6,7 @@ This project is a Python-based microservice that calculates health metrics—spe
 
 ## Project Structure
 
-\`\`\`
+```
 health-calculator-service/
 ├── app.py                      # Main Flask application with API endpoints (/bmi and /bmr)
 ├── health_utils.py             # Utility functions for health metric calculations
@@ -17,108 +17,108 @@ health-calculator-service/
 ├── test.py                     # Unit tests for BMI and BMR calculations
 ├── .github/workflows/ci-cd.yml # GitHub Actions workflow for CI/CD pipeline
 └── README.md                   # Project documentation
-\`\`\`
+```
 
 ## Setup Instructions
 
-1. **Clone the Repository**
+1. **Clone the Repository** 🛠️
 
-   \`\`\`bash
+   ```bash
    git clone https://github.com/yourusername/health-calculator-service.git
    cd health-calculator-service
-   \`\`\`
+   ```
 
-2. **Install Dependencies**
+2. **Install Dependencies** 📦
 
    Use the provided Makefile command:
    
-   \`\`\`bash
+   ```bash
    make init
-   \`\`\`
+   ```
 
-3. **Run the Application Locally**
+3. **Run the Application Locally** 🚀
 
    Start the Flask application by running:
    
-   \`\`\`bash
+   ```bash
    make run
-   \`\`\`
+   ```
    
-   The API will be available at \`http://localhost:5000\`.
+   The API will be available at `http://localhost:5000`.
 
-4. **Testing**
+4. **Testing** ✅
 
    Run the unit tests to ensure everything is working:
    
-   \`\`\`bash
+   ```bash
    make test
-   \`\`\`
+   ```
 
-5. **Docker Build**
+5. **Docker Build** 🐳
 
    Build the Docker image using:
    
-   \`\`\`bash
+   ```bash
    make build
-   \`\`\`
+   ```
 
 ## API Endpoints
 
 - **POST /bmi**
 
   - **Request Body:**
-    \`\`\`json
+    ```json
     {
       "height": 1.75,   // in meters
       "weight": 70      // in kilograms
     }
-    \`\`\`
+    ```
   - **Response:**
-    \`\`\`json
+    ```json
     {
       "bmi": 22.86
     }
-    \`\`\`
+    ```
 
 - **POST /bmr**
 
   - **Request Body:**
-    \`\`\`json
+    ```json
     {
       "height": 175,    // in centimeters
       "weight": 70,     // in kilograms
       "age": 25,
       "gender": "male"
     }
-    \`\`\`
+    ```
   - **Response:**
-    \`\`\`json
+    ```json
     {
       "bmr": 1665.92   // Example value, rounded to 2 decimal places
     }
-    \`\`\`
+    ```
 
 ## CI/CD Pipeline
 
-A GitHub Actions workflow (\`.github/workflows/ci-cd.yml\`) is configured to:
-- Run on pushes to the \`main\` branch.
+A GitHub Actions workflow (`.github/workflows/ci-cd.yml`) is configured to:
+- Run on pushes to the `main` branch.
 - Set up the Python environment.
 - Install dependencies.
 - Run unit tests.
 - Build the Docker image.
-- Deploy the container to Azure App Service using the publish profile stored in the repository secrets (\`AZURE_WEBAPP_PUBLISH_PROFILE\`).
+- Deploy the container to Azure App Service using the publish profile stored in the repository secrets (`AZURE_WEBAPP_PUBLISH_PROFILE`).
 
-## Deployment to Azure
+## Deployment to Azure ☁️
 
 1. **Create an Azure App Service:**
    - Create a new Web App in the [Azure Portal](https://portal.azure.com).
 
 2. **Configure GitHub Secrets:**
    - Download the publish profile from the Azure App Service.
-   - In your GitHub repository settings, add a secret named \`AZURE_WEBAPP_PUBLISH_PROFILE\` with the content of the publish profile.
+   - In your GitHub repository settings, add a secret named `AZURE_WEBAPP_PUBLISH_PROFILE` with the content of the publish profile.
 
 3. **Deploy:**
-   - Push changes to the \`main\` branch. The GitHub Actions workflow will trigger and deploy the new containerized version of the microservice.
+   - Push changes to the `main` branch. The GitHub Actions workflow will trigger and deploy the new containerized version of the microservice.
 
 ## Additional Notes
 
@@ -128,4 +128,4 @@ A GitHub Actions workflow (\`.github/workflows/ci-cd.yml\`) is configured to:
 
 ---
 
-Happy coding!
+Happy coding! 😊
