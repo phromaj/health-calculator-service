@@ -1,38 +1,38 @@
-.PHONY: init run test build clean test-endpoints
+# ================
+# File: Makefile
+# ================
+.PHONY: run down test build clean test-endpoints
 
-init:
-	@echo "Setting up virtual environment..."
-	python -m venv .venv
-	@echo "\nTo activate the virtual environment and install requirements:"
-	@echo "- For Fish shell:    source .venv/bin/activate.fish"
-	@echo "- For Windows:       .venv\\Scripts\\activate"
-	@echo "- For Bash/Zsh:      source .venv/bin/activate"
-	@echo "\nAfter activation, run:"
-	@echo "pip install --upgrade pip"
-	@echo "pip install -r requirements.txt"
+# Build the image first (dependency for run and test)
+run: build
+	@echo "Running the application using Docker Compose..."
+	docker-compose up -d
 
-run:
-	@echo "Running the Flask app..."
-	flask run --host=0.0.0.0 --port=9898
+down:
+	@echo "Stopping the application using Docker Compose..."
+	docker-compose down
 
-test:
-	@echo "Running tests..."
-	python -m unittest discover -s . -p "test*.py"
+# Build the image before running tests in a container
+test: build
+	@echo "Running tests inside a Docker container..."
+	docker-compose run --rm app python -m unittest discover -s . -p "test*.py"
 
 build:
-	@echo "Building the Docker image..."
-	docker build -t health-calculator-service .
+	@echo "Building the Docker image using Docker Compose..."
+	docker-compose build
 
 clean:
-	@echo "Cleaning up..."
-	rm -rf __pycache__
+	@echo "Cleaning up Docker resources (optional)..."
+	docker-compose down -v --remove-orphans
+	docker system prune -af --volumes
 
 test-endpoints:
-	@echo "Testing BMI endpoint..."
-	curl -X POST http://localhost:9898/bmi \
+	@echo "\nTesting BMI endpoint..."
+	curl -X POST http://localhost:5001/bmi \
 		-H "Content-Type: application/json" \
 		-d '{"height": 1.75, "weight": 70}'
 	@echo "\n\nTesting BMR endpoint..."
-	curl -X POST http://localhost:9898/bmr \
+	curl -X POST http://localhost:5001/bmr \
 		-H "Content-Type: application/json" \
 		-d '{"height": 175, "weight": 70, "age": 30, "gender": "male"}'
+	@echo "\n"

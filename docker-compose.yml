@@ -1,0 +1,15 @@
+---
+
+services:
+  app:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      # Mount the current directory into the container for development
+      # Changes made locally will reflect inside the container without rebuilding
+      - .:/app
+    # Optionally, specify the environment file if needed
+    # env_file:
+    #   - .env
+    # Command is already specified in the Dockerfile CMD instruction

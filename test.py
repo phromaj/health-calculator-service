@@ -4,17 +4,33 @@ from health_utils import calculate_bmi, calculate_bmr
 class TestHealthCalculations(unittest.TestCase):
     def test_calculate_bmi(self):
         # Test BMI calculation: weight 70kg and height 1.75m should be ~22.86
-        self.assertAlmostEqual(calculate_bmi(1.75, 70), 22.86, places=2)
+        height = 1.75
+        weight = 70
+        calculated_bmi = calculate_bmi(height, weight)
+        print(f"\nBMI Test:  Height={height:<4}m, Weight={weight:<3}kg -> Calculated BMI: {calculated_bmi:.2f}")
+        self.assertAlmostEqual(calculated_bmi, 22.86, places=2)
 
     def test_calculate_bmr_male(self):
         # Test BMR calculation for a male
-        expected_bmr = 88.362 + (13.397 * 70) + (4.799 * 175) - (5.677 * 25)
-        self.assertAlmostEqual(calculate_bmr(175, 70, 25, 'male'), expected_bmr, places=2)
+        height = 175
+        weight = 70
+        age = 25
+        gender = 'male'
+        calculated_bmr = calculate_bmr(height, weight, age, gender)
+        expected_bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age)
+        print(f"BMR Test ({gender.capitalize():<6}): Height={height:<3}cm, Weight={weight:<3}kg, Age={age:<3} -> Calculated BMR: {calculated_bmr:.2f}")
+        self.assertAlmostEqual(calculated_bmr, expected_bmr, places=2)
 
     def test_calculate_bmr_female(self):
         # Test BMR calculation for a female
-        expected_bmr = 447.593 + (9.247 * 60) + (3.098 * 165) - (4.330 * 30)
-        self.assertAlmostEqual(calculate_bmr(165, 60, 30, 'female'), expected_bmr, places=2)
+        height = 165
+        weight = 60
+        age = 30
+        gender = 'female'
+        calculated_bmr = calculate_bmr(height, weight, age, gender)
+        expected_bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)
+        print(f"BMR Test ({gender.capitalize():<6}): Height={height:<3}cm, Weight={weight:<3}kg, Age={age:<3} -> Calculated BMR: {calculated_bmr:.2f}")
+        self.assertAlmostEqual(calculated_bmr, expected_bmr, places=2)
 
 if __name__ == '__main__':
     unittest.main()

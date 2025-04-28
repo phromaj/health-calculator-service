@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Calculator API</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --border-radius: 0.3rem;
+            --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-sizing: border-box; /* Include padding and border in element's total width/height */
+            font-size: 1rem;
+        }
+         input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+         }
+
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        pre {
+            background-color: var(--light-gray);
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 15px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9rem;
+            min-height: 40px; /* Ensure it has some height even when empty */
+            color: var(--dark-gray);
+        }
+        pre.success {
+             border-left: 5px solid var(--success-color);
+             color: var(--success-color);
+        }
+        pre.error {
+             border-left: 5px solid var(--error-color);
+             color: var(--error-color);
+             font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Health Calculator</h1>
+
+        <section>
+            <h2>BMI Calculator</h2>
+            <form id="bmi-form">
+                <label for="bmi-height">Height (meters):</label>
+                <input type="number" id="bmi-height" name="height" step="0.01" required placeholder="e.g., 1.75">
+
+                <label for="bmi-weight">Weight (kg):</label>
+                <input type="number" id="bmi-weight" name="weight" step="0.1" required placeholder="e.g., 70">
+
+                <button type="submit">Calculate BMI</button>
+            </form>
+            <h3>Result:</h3>
+            <pre id="bmi-result">Awaiting calculation...</pre>
+        </section>
+
+        <section>
+            <h2>BMR Calculator</h2>
+            <form id="bmr-form">
+                <label for="bmr-height">Height (cm):</label>
+                <input type="number" id="bmr-height" name="height" step="0.1" required placeholder="e.g., 175">
+
+                <label for="bmr-weight">Weight (kg):</label>
+                <input type="number" id="bmr-weight" name="weight" step="0.1" required placeholder="e.g., 70">
+
+                <label for="bmr-age">Age (years):</label>
+                <input type="number" id="bmr-age" name="age" required placeholder="e.g., 30">
+
+                <label for="bmr-gender">Gender:</label>
+                <select id="bmr-gender" name="gender" required>
+                    <option value="" disabled selected>Select gender...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <button type="submit">Calculate BMR</button>
+            </form>
+            <h3>Result:</h3>
+            <pre id="bmr-result">Awaiting calculation...</pre>
+        </section>
+    </div>
+
+    <script>
+        const apiBaseUrl = ''; // Relative paths
+
+        async function handleApiRequest(url, data, resultElementId) {
+            const resultElement = document.getElementById(resultElementId);
+            resultElement.textContent = 'Calculating...';
+            resultElement.className = ''; // Reset classes
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    // Handle known API errors (e.g., validation)
+                    resultElement.textContent = `Error: ${result.error || `HTTP status ${response.status}`}`;
+                    resultElement.classList.add('error');
+                    console.error('API Error:', result);
+                } else {
+                    // Display success
+                    resultElement.textContent = JSON.stringify(result, null, 2);
+                     resultElement.classList.add('success');
+                }
+
+            } catch (error) {
+                // Handle network errors or JSON parsing errors
+                resultElement.textContent = `Network or processing error: ${error.message}`;
+                 resultElement.classList.add('error');
+                console.error('Fetch/Processing Error:', error);
+            }
+        }
+
+        document.getElementById('bmi-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const height = parseFloat(document.getElementById('bmi-height').value);
+            const weight = parseFloat(document.getElementById('bmi-weight').value);
+            // Basic client-side check (Pydantic handles server-side)
+            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+                 alert("Please enter valid positive numbers for height and weight.");
+                 return;
+            }
+            const data = { height, weight };
+            handleApiRequest(`${apiBaseUrl}/bmi`, data, 'bmi-result');
+        });
+
+        document.getElementById('bmr-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const height = parseFloat(document.getElementById('bmr-height').value);
+            const weight = parseFloat(document.getElementById('bmr-weight').value);
+            const age = parseInt(document.getElementById('bmr-age').value);
+            const gender = document.getElementById('bmr-gender').value;
+            // Basic client-side check
+             if (isNaN(height) || isNaN(weight) || isNaN(age) || height <= 0 || weight <= 0 || age <= 0 || !gender) {
+                 alert("Please enter valid positive numbers for height, weight, age and select a gender.");
+                 return;
+            }
+            const data = { height, weight, age, gender };
+            handleApiRequest(`${apiBaseUrl}/bmr`, data, 'bmr-result');
+        });
+    </script>
+
+</body>
+</html>
