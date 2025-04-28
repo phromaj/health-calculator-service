@@ -46,11 +46,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} # Tag with commit SHA
-          # Also tag as latest for convenience (optional)
-          # tags: |
-          #   ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          #   ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          tags: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
 
       # Deploy to Azure Web App for Containers
       - name: Deploy to Azure App Service
@@ -58,8 +56,8 @@ jobs:
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          # Specify the IMAGE to deploy, using the commit SHA tag
-          images: '${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          # Specify the IMAGE to deploy, using the latest tag
+          images: '${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest'
 
       # Optional: Logout from ACR
       - name: Docker Logout
