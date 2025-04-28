@@ -9,7 +9,7 @@ on:
 env:
   # Use lower case for image name
   IMAGE_NAME: health-calculator-service
-  AZURE_APP_SERVICE_NAME: 'health-calculator-app' # Replace with your Azure App Service name
+  AZURE_APP_SERVICE_NAME: 'app-health-calculator-41547c45' # Replace with your Azure App Service name
 
 jobs:
   build-test-deploy:
